@@ -61,13 +61,13 @@ function draw() {
   }
 
   // --- view state (data-driven smoothing) ---
-  cam.followSideScrollerX(player.x, level.camLerp);
+  cam.followSideScrollerX(player, level.camLerp);
   cam.y = 0;
   cam.clampToWorld(level.w, level.h);
 
   // --- draw ---
   cam.begin();
-  level.drawWorld();
+  level.drawWorld(cam);
   player.draw(level.theme.blob);
   cam.end();
 

@@ -28,14 +28,34 @@ class WorldLevel {
     );
   }
 
-drawWorld() {
-  background(this.theme.bg);
-  push();
-  rectMode(CORNER);          // critical: undo any global rectMode(CENTER) [web:230]
-  noStroke();
-  fill(this.theme.platform);
+  drawWorld(cam) {
+    background(this.theme.bg);
 
-  for (const p of this.platforms) rect(p.x, p.y, p.w, p.h); // x,y = top-left [web:234]
-  pop();
-}
+    // --- PARALLAX CLOUDS ---
+    push();
+    noStroke();
+    fill(220, 230, 255, 150);
+
+    const cloudOffset = cam.x * 0.3; // slower than foreground
+
+    for (let i = 0; i < 10; i++) {
+      let cx = i * 300 - cloudOffset;
+      let cy = 120 + sin(i * 2) * 20;
+      ellipse(cx, cy, 140, 60);
+    }
+
+    pop();
+
+    // --- PLATFORMS ---
+    push();
+    rectMode(CORNER);
+    noStroke();
+    fill(this.theme.platform);
+
+    for (const p of this.platforms) {
+      rect(p.x, p.y, p.w, p.h);
+    }
+
+    pop();
+  }
 }
