@@ -29,6 +29,8 @@ let cam;
 let cloudImg; //
 let earthImg;
 let moonImg;
+let marsImg;
+
 let saturnImg;
 
 function preload() {
@@ -38,6 +40,8 @@ function preload() {
 
   earthImg = loadImage("earth.png");
   moonImg = loadImage("moon.png");
+  marsImg = loadImage("mars.png");
+
   saturnImg = loadImage("saturn.png");
 }
 

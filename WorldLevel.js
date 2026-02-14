@@ -24,6 +24,17 @@ class WorldLevel {
 
     this.secrets = levelJson.secrets ?? []; //////
 
+    this.stars = []; ///////
+    let spacing = 100; ////////
+
+    for (let x = 0; x < this.w; x += spacing) {
+      this.stars.push({
+        x: x + random(-60, 30),
+        y: random(20, 150),
+        size: random(1, 3),
+      });
+    }
+
     // Platforms
     this.platforms = (levelJson.platforms ?? []).map(
       (p) => new Platform(p.x, p.y, p.w, p.h),
@@ -39,10 +50,10 @@ class WorldLevel {
 
     const planetOffset = cam.x * 0.15; // slower than clouds
 
-    image(earthImg, 600 - planetOffset, 40, 180, 180);
-    image(moonImg, 1200 - planetOffset, 70, 120, 120);
-    image(saturnImg, 1800 - planetOffset, 30, 220, 160);
-    image(marsImg, 2400 - planetOffset, 70, 220, 120);
+    image(earthImg, 600 - planetOffset, 50, 180, 180);
+    image(moonImg, 1100 - planetOffset, 80, 120, 120);
+    image(marsImg, 1600 - planetOffset, 60, 140, 140);
+    image(saturnImg, 2100 - planetOffset, 40, 220, 160);
 
     pop();
 
@@ -57,7 +68,7 @@ class WorldLevel {
       if (onScreen) {
         const pulse = 2 + sin(frameCount * 0.12) * 2;
         noStroke();
-        fill("black");
+        fill("yellow");
         ellipse(s.x, s.y, 6 + pulse, 6 + pulse);
       }
     } /////////////
