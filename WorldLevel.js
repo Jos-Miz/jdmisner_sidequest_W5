@@ -34,14 +34,15 @@ class WorldLevel {
     background(this.theme.bg);
 
     // --- PARALLAX CLOUDS ---
+    // --- PLANETS (slow parallax layer) ---
     push();
-    const cloudOffset = cam.x * 0.3;
 
-    for (let i = 0; i < 8; i++) {
-      let cx = i * 320 - (cloudOffset % 320);
-      let cy = 80;
-      image(cloudImg, cx, cy, 200, 120);
-    }
+    const planetOffset = cam.x * 0.15; // slower than clouds
+
+    image(earthImg, 600 - planetOffset, 40, 180, 180);
+    image(moonImg, 1200 - planetOffset, 70, 120, 120);
+    image(saturnImg, 1800 - planetOffset, 30, 220, 160);
+    image(marsImg, 2400 - planetOffset, 70, 220, 120);
 
     pop();
 

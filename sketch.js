@@ -26,9 +26,19 @@ let level;
 let player;
 let cam;
 
+let cloudImg; //
+let earthImg;
+let moonImg;
+let saturnImg;
+
 function preload() {
-  allLevelsData = loadJSON("levels.json"); // levels.json beside index.html [web:122]
+  allLevelsData = loadJSON("levels.json");
+
   cloudImg = loadImage("pink_cloud.png");
+
+  earthImg = loadImage("earth.png");
+  moonImg = loadImage("moon.png");
+  saturnImg = loadImage("saturn.png");
 }
 
 function setup() {
