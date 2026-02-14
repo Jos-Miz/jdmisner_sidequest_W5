@@ -22,6 +22,8 @@ class WorldLevel {
     // Start
     this.start = Object.assign({ x: 80, y: 220, r: 26 }, levelJson.start ?? {});
 
+    this.secrets = levelJson.secrets ?? []; //////
+
     // Platforms
     this.platforms = (levelJson.platforms ?? []).map(
       (p) => new Platform(p.x, p.y, p.w, p.h),
@@ -33,18 +35,31 @@ class WorldLevel {
 
     // --- PARALLAX CLOUDS ---
     push();
-    noStroke();
-    fill(220, 230, 255, 150);
+    const cloudOffset = cam.x * 0.3;
 
-    const cloudOffset = cam.x * 0.3; // slower than foreground
-
-    for (let i = 0; i < 10; i++) {
-      let cx = i * 300 - cloudOffset;
-      let cy = 120 + sin(i * 2) * 20;
-      ellipse(cx, cy, 140, 60);
+    for (let i = 0; i < 8; i++) {
+      let cx = i * 320 - (cloudOffset % 320);
+      let cy = 80;
+      image(cloudImg, cx, cy, 200, 120);
     }
 
     pop();
+
+    for (const s of this.secrets) {
+      //////////
+      const onScreen =
+        s.x > cam.x &&
+        s.x < cam.x + cam.viewW &&
+        s.y > cam.y &&
+        s.y < cam.y + cam.viewH;
+
+      if (onScreen) {
+        const pulse = 2 + sin(frameCount * 0.12) * 2;
+        noStroke();
+        fill("black");
+        ellipse(s.x, s.y, 6 + pulse, 6 + pulse);
+      }
+    } /////////////
 
     // --- PLATFORMS ---
     push();

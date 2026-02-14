@@ -28,6 +28,7 @@ let cam;
 
 function preload() {
   allLevelsData = loadJSON("levels.json"); // levels.json beside index.html [web:122]
+  cloudImg = loadImage("pink_cloud.png");
 }
 
 function setup() {
