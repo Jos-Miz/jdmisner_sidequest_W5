@@ -1,21 +1,7 @@
-/*
-Week 5 — Example 5: Side-Scroller Platformer with JSON Levels + Modular Camera
+// sketch.js
 
-Course: GBDA302 | Instructors: Dr. Karen Cochrane & David Han
-Date: Feb. 12, 2026
-
-Move: WASD/Arrows | Jump: Space
-
-Learning goals:
-- Build a side-scrolling platformer using modular game systems
-- Load complete level definitions from external JSON (LevelLoader + levels.json)
-- Separate responsibilities across classes (Player, Platform, Camera, World)
-- Implement gravity, jumping, and collision with platforms
-- Use a dedicated Camera2D class for smooth horizontal tracking
-- Support multiple levels and easy tuning through data files
-- Explore scalable project architecture for larger games
-*/
-
+let gameState = "play"; // "splash" | "play" | "end"
+//
 const VIEW_W = 800;
 const VIEW_H = 480;
 
@@ -26,8 +12,25 @@ let level;
 let player;
 let cam;
 
+let showSplash = true;
+
+// planet images (globals used by WorldLevel.js)
+let earthImg, moonImg, marsImg, saturnImg;
+
+let starBgImg;
+
+let planetBgImg;
+
 function preload() {
-  allLevelsData = loadJSON("levels.json"); // levels.json beside index.html [web:122]
+  allLevelsData = loadJSON("levels.json");
+
+  earthImg = loadImage("earth.png");
+  moonImg = loadImage("moon.png");
+  marsImg = loadImage("mars.png");
+  saturnImg = loadImage("saturn.png");
+
+  starBgImg = loadImage("yippie.jpeg");
+  planetBgImg = loadImage("sad_planet.jpeg");
 }
 
 function setup() {
@@ -51,25 +54,55 @@ function loadLevel(i) {
 }
 
 function draw() {
-  // --- game state ---
+  if (showSplash) {
+    // --- SPLASH SCREEN ---
+    image(planetBgImg, 0, 0, width, height);
+    fill(255);
+    textAlign(CENTER, CENTER);
+
+    stroke(0); // black outline
+    strokeWeight(6); // thickness of outline
+    fill(255); // white text
+
+    textSize(36);
+    text("Collect the Star ⭐️", width / 2, height / 2 - 40);
+
+    textSize(27);
+    text(
+      "You must collect the star from reaching earth. Hurry!",
+      width / 2,
+      height / 2 + 20,
+    );
+
+    textSize(16);
+    text("Press SPACE to start", width / 2, height / 2 + 80);
+    text("A/D or ←/→ move • W/↑/Space jump", width / 2, height / 2 + 110);
+
+    return; // IMPORTANT: stops the game from running underneath
+  }
+
+  if (gameState === "end") {
+    drawEndScreen();
+    return;
+  }
+
   player.update(level);
 
-  // Fall death → respawn
   if (player.y - player.r > level.deathY) {
     loadLevel(levelIndex);
     return;
   }
 
-  // --- view state (data-driven smoothing) ---
-  cam.followSideScrollerX(player.x, level.camLerp);
+  cam.followSideScrollerX(player, level.camLerp);
   cam.y = 0;
   cam.clampToWorld(level.w, level.h);
 
-  // --- draw ---
   cam.begin();
   level.drawWorld();
   player.draw(level.theme.blob);
   cam.end();
+
+  checkStarCollision(); // ⭐ add this
 
   // HUD
   fill(0);
@@ -77,25 +110,55 @@ function draw() {
   text(level.name + " (Example 5)", 10, 18);
   text("A/D or ←/→ move • Space/W/↑ jump • Fall = respawn", 10, 36);
   text("camLerp(JSON): " + level.camLerp + "  world.w: " + level.w, 10, 54);
-  text("cam: " + cam.x + ", " + cam.y, 10, 90);
-  const p0 = level.platforms[0];
-  text(`p0: x=${p0.x} y=${p0.y} w=${p0.w} h=${p0.h}`, 10, 108);
-
-  text(
-    "platforms: " +
-      level.platforms.length +
-      " start: " +
-      level.start.x +
-      "," +
-      level.start.y,
-    10,
-    72,
-  );
 }
 
 function keyPressed() {
+  if (showSplash && (key === " " || keyCode === ENTER)) {
+    showSplash = false;
+    return; // stop other key actions on this press
+  }
+
+  if (gameState === "end" && (key === "r" || key === "R")) {
+    gameState = "play";
+    loadLevel(0);
+    return;
+  }
+
   if (key === " " || key === "W" || key === "w" || keyCode === UP_ARROW) {
     player.tryJump();
   }
   if (key === "r" || key === "R") loadLevel(levelIndex);
+}
+
+function checkStarCollision() {
+  if (level.star.collected) return;
+
+  const touching =
+    dist(player.x, player.y, level.star.x, level.star.y) <
+    player.r + level.star.r;
+
+  if (touching) {
+    level.star.collected = true;
+    gameState = "end";
+  }
+}
+
+function drawEndScreen() {
+  image(starBgImg, 0, 0, width, height);
+  textAlign(CENTER, CENTER);
+
+  stroke(0); // black outline
+  strokeWeight(6); // thickness of outline
+  fill(255); // white text
+
+  textSize(40);
+  text("Yippie!!", width / 2, height / 2 - 40);
+
+  textSize(24);
+  text("You saved earth from the evil star.", width / 2, height / 2 + 20);
+
+  textSize(16);
+  text("Press R to replay", width / 2, height - 50);
+
+  textAlign(LEFT, BASELINE);
 }
