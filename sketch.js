@@ -26,23 +26,8 @@ let level;
 let player;
 let cam;
 
-let cloudImg; //
-let earthImg;
-let moonImg;
-let marsImg;
-
-let saturnImg;
-
 function preload() {
-  allLevelsData = loadJSON("levels.json");
-
-  cloudImg = loadImage("pink_cloud.png");
-
-  earthImg = loadImage("earth.png");
-  moonImg = loadImage("moon.png");
-  marsImg = loadImage("mars.png");
-
-  saturnImg = loadImage("saturn.png");
+  allLevelsData = loadJSON("levels.json"); // levels.json beside index.html [web:122]
 }
 
 function setup() {
@@ -76,13 +61,13 @@ function draw() {
   }
 
   // --- view state (data-driven smoothing) ---
-  cam.followSideScrollerX(player, level.camLerp);
+  cam.followSideScrollerX(player.x, level.camLerp);
   cam.y = 0;
   cam.clampToWorld(level.w, level.h);
 
   // --- draw ---
   cam.begin();
-  level.drawWorld(cam);
+  level.drawWorld();
   player.draw(level.theme.blob);
   cam.end();
 

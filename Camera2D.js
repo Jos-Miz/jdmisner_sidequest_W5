@@ -6,9 +6,8 @@ class Camera2D {
     this.y = 0;
   }
 
-  followSideScrollerX(player, lerpAmt) {
-    const lookAhead = player.vx * 30; // adjust strength here
-    const desired = player.x + lookAhead - this.viewW / 2;
+  followSideScrollerX(targetX, lerpAmt) {
+    const desired = targetX - this.viewW / 2;
     this.x = lerp(this.x, desired, lerpAmt);
   }
 
